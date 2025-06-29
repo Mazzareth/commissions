@@ -1,77 +1,52 @@
 'use client';
 
-import React, { useState } from 'react';
-import Button from './ui/Button';
-
-type Commission = {
-  id: number;
-  title: string;
-  description: string | null;
-  price: number;
-  status: string;
-  startDate: string;
-  dueDate: string | null;
-  completedAt: string | null;
-  clientId: number;
-  edit?: boolean; // Used to toggle edit mode, per ClientDetails
-};
-
-type CommissionDetailModalProps = {
-  commission: Commission;
+interface CommissionDetailModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onUpdated: () => void;
-  onDeleted: () => void;
-};
+  commission: {
+    id: number;
+    title: string;
+    description: string | null;
+    price: number;
+    status: string;
+    startDate: string;
+    dueDate: string | null;
+    completedAt: string | null;
+  };
+}
 
-const statuses = ['pending', 'in-progress', 'completed'];
-
-const CommissionDetailModal: React.FC<CommissionDetailModalProps> = ({
-  commission,
+export default function CommissionDetailModal({
   isOpen,
   onClose,
-  onUpdated,
-  onDeleted,
-}) => {
-  const [editData, setEditData] = useState({
-    title: commission.title,
-    description: commission.description ?? '',
-    price: commission.price,
-    status: commission.status,
-    startDate: commission.startDate,
-    dueDate: commission.dueDate ?? '',
-    completedAt: commission.completedAt ?? '',
-  });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  React.useEffect(() => {
-    setEditData({
-      title: commission.title,
-      description: commission.description ?? '',
-      price: commission.price,
-      status: commission.status,
-      startDate: commission.startDate,
-      dueDate: commission.dueDate ?? '',
-      completedAt: commission.completedAt ?? '',
-    });
-    setError(null);
-  }, [commission, isOpen]);
-
+  commission,
+}: CommissionDetailModalProps) {
   if (!isOpen) return null;
 
-  const handleSave = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const res = await fetch(`/api/commissions/${commission.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...editData,
-          dueDate: editData.dueDate || null,
-          completedAt: editData.completedAt || null,
-        }),
+  return (
+    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center">
+      <div className="bg-card border border-border rounded-xl shadow-lg p-8 w-full max-w-md relative animate-fadeIn">
+        <button
+          className="absolute top-3 right-4 text-muted-foreground hover:text-foreground text-2xl"
+          onClick={onClose}
+          aria-label="Close"
+        >
+          &times;
+        </button>
+        <h2 className="text-xl font-bold mb-4 text-foreground">{commission.title}</h2>
+        <div className="mb-2 text-muted-foreground">{commission.description || <span className="italic text-muted-foreground">No description</span>}</div>
+        <div className="mb-2 text-muted-foreground">Price: <span className="text-foreground">${commission.price.toFixed(2)}</span></div>
+        <div className="mb-2 text-muted-foreground">Status: <span className="text-foreground">{commission.status}</span></div>
+        <div className="mb-2 text-muted-foreground">Started: <span className="text-foreground">{new Date(commission.startDate).toLocaleDateString()}</span></div>
+        {commission.dueDate && (
+          <div className="mb-2 text-muted-foreground">Due: <span className="text-foreground">{new Date(commission.dueDate).toLocaleDateString()}</span></div>
+        )}
+        {commission.completedAt && (
+          <div className="mb-2 text-muted-foreground">Completed: <span className="text-foreground">{new Date(commission.completedAt).toLocaleDateString()}</span></div>
+        )}
+      </div>
+    </div>
+  );
+}),
       });
       if (!res.ok) {
         const json = await res.json().catch(() => ({}));

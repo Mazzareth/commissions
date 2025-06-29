@@ -1,22 +1,26 @@
 'use client';
 
 import { useState } from 'react';
+import { Input } from './ui/input';
+import { Textarea } from './ui/textarea';
+import { Button } from './ui/Button';
 
 interface AddCharacterModalProps {
-  clientId: number;
   isOpen: boolean;
   onClose: () => void;
   onCreated: () => void;
+  clientId: number;
 }
 
 export default function AddCharacterModal({
-  clientId,
   isOpen,
   onClose,
   onCreated,
+  clientId,
 }: AddCharacterModalProps) {
   const [name, setName] = useState('');
-  const [note, setNote] = useState('');
+  const [desc, setDesc] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -24,7 +28,8 @@ export default function AddCharacterModal({
 
   const resetForm = () => {
     setName('');
-    setNote('');
+    setDesc('');
+    setImageUrl('');
     setError(null);
   };
 
@@ -39,11 +44,10 @@ export default function AddCharacterModal({
     try {
       const payload: any = {
         name: name.trim(),
+        description: desc.trim(),
+        imageUrl: imageUrl.trim(),
         clientId,
       };
-      if (note.trim()) {
-        payload.note = note.trim();
-      }
       const res = await fetch('/api/characters', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -64,58 +68,64 @@ export default function AddCharacterModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center">
-      <div className="bg-gray-900 rounded-xl shadow-2xl glass p-8 w-full max-w-md relative animate-fadeIn">
+    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center">
+      <div className="bg-card border border-border rounded-xl shadow-lg p-8 w-full max-w-md relative animate-fadeIn">
         <button
-          className="absolute top-3 right-4 text-gray-400 hover:text-gray-100 text-2xl"
+          className="absolute top-3 right-4 text-muted-foreground hover:text-foreground text-2xl"
           onClick={onClose}
           aria-label="Close"
           disabled={loading}
         >
           &times;
         </button>
-        <h2 className="text-xl font-bold mb-4 text-gray-100">Add Character</h2>
+        <h2 className="text-xl font-bold mb-4">Add Character</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-gray-300 mb-1 font-medium">
-              Name <span className="text-red-400">*</span>
+            <label className="block mb-1 font-medium">
+              Name <span className="text-destructive">*</span>
             </label>
-            <input
-              type="text"
-              className="w-full px-3 py-2 rounded bg-gray-800 text-gray-100 border border-gray-700 focus:outline-none"
+            <Input
               value={name}
               onChange={e => setName(e.target.value)}
               disabled={loading}
               required
+              placeholder="Name"
             />
           </div>
           <div>
-            <label className="block text-gray-300 mb-1">Optional Note</label>
-            <textarea
-              className="w-full px-3 py-2 rounded bg-gray-800 text-gray-100 border border-gray-700 focus:outline-none"
-              value={note}
-              onChange={e => setNote(e.target.value)}
+            <label className="block mb-1 font-medium">
+              Description
+            </label>
+            <Textarea
+              value={desc}
+              onChange={e => setDesc(e.target.value)}
               rows={2}
               disabled={loading}
-              placeholder="Add a note for this character (optional)"
+              placeholder="A short description"
+            />
+          </div>
+          <div>
+            <label className="block mb-1 font-medium">
+              Image URL
+            </label>
+            <Input
+              value={imageUrl}
+              onChange={e => setImageUrl(e.target.value)}
+              disabled={loading}
+              placeholder="https://example.com/image.png"
             />
           </div>
           {error && (
-            <div className="text-red-400 text-sm">{error}</div>
+            <div className="text-destructive text-sm">{error}</div>
           )}
           <div className="flex justify-end">
-            <button
+            <Button
               type="submit"
-              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-lg transition-colors shadow disabled:opacity-60"
-              disabled={loading}
+              className="mt-4"
+              loading={loading}
             >
-              {loading ? (
-                <span className="animate-spin inline-block mr-2">&#9696;</span>
-              ) : (
-                '+'
-              )}
               {loading ? 'Adding...' : 'Add Character'}
-            </button>
+            </Button>
           </div>
         </form>
       </div>

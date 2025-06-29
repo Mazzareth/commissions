@@ -73,20 +73,21 @@ const NoteModal: React.FC<NoteModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
-      <div className="bg-gray-900/95 rounded-xl shadow-2xl w-full max-w-md p-7 relative animate-fadeIn glass">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+      <div className="bg-card border border-border rounded-xl shadow-lg w-full max-w-md p-7 relative animate-fadeIn">
         <button
-          className="absolute top-3 right-3 text-gray-400 hover:text-blue-300 transition-colors"
+          className="absolute top-3 right-3 text-muted-foreground hover:text-primary transition-colors"
           onClick={onClose}
           aria-label="Close"
         >
-          <span className="material-icons" style={{ fontSize: 24 }}>close</span>
+          {/* Use lucide-react X icon if desired, otherwise keep times symbol */}
+          &times;
         </button>
-        <h2 className="text-2xl font-bold mb-4 text-gray-100">
+        <h2 className="text-2xl font-bold mb-4 text-foreground">
           {note ? 'Edit Note' : 'Add Note'}
         </h2>
         <textarea
-          className="w-full min-h-[90px] max-h-52 p-2 rounded bg-gray-800 text-gray-100 border border-gray-700 focus:outline-none focus:ring focus:ring-blue-500"
+          className="w-full min-h-[90px] max-h-52 p-2 rounded bg-background text-foreground border border-border focus:outline-none"
           placeholder="Enter your note here..."
           value={content}
           onChange={e => {
@@ -99,7 +100,7 @@ const NoteModal: React.FC<NoteModalProps> = ({
           maxLength={1000}
         />
         {touched && error && (
-          <div className="text-red-400 text-xs mt-2">{error}</div>
+          <div className="text-destructive text-xs mt-2">{error}</div>
         )}
         <div className="flex justify-end gap-2 mt-6">
           <Button variant="ghost" onClick={onClose} disabled={loading}>Cancel</Button>
