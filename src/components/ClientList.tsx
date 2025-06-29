@@ -41,22 +41,22 @@ export default function ClientList({
 
   return (
     <div className="overflow-y-auto h-[calc(100vh-64px)]">
-      <ul className="divide-y divide-white/5">
+      <ul className="divide-y divide-border">
         {clients.map((client, idx) => (
           <li 
             key={client.id}
             className={`
               p-4 cursor-pointer transition-colors rounded-lg 
-              hover:bg-white/5
-              ${selectedClientId === client.id ? 'bg-violet-600/20 border-l-4 border-violet-500' : ''}
+              hover:bg-card/80
+              ${selectedClientId === client.id ? 'bg-primary/15 border-l-4 border-primary' : 'bg-card'}
               animate-fadeIn
             `}
             style={{ animationDelay: `${idx * 60}ms` }} // staggered entrance
             onClick={() => onSelectClient(client.id)}
           >
-            <div className="font-medium text-gray-100">{client.name}</div>
+            <div className="font-medium">{client.name}</div>
             {client.discordId && (
-              <div className="text-sm text-gray-400 truncate">{client.discordId}</div>
+              <div className="text-sm text-muted-foreground truncate">{client.discordId}</div>
             )}
           </li>
         ))}

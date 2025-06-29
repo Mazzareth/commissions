@@ -1,6 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import { Input } from './ui/input';
+import { Textarea } from './ui/textarea';
+import { Button } from './ui/Button';
 
 interface AddClientModalProps {
   isOpen: boolean;
@@ -64,38 +67,35 @@ export default function AddClientModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center">
-      <div className="bg-gray-900 rounded-xl shadow-2xl glass p-8 w-full max-w-md relative animate-fadeIn">
+    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center">
+      <div className="bg-card border border-border rounded-xl shadow-lg p-8 w-full max-w-md relative animate-fadeIn">
         <button
-          className="absolute top-3 right-4 text-gray-400 hover:text-gray-100 text-2xl"
+          className="absolute top-3 right-4 text-muted-foreground hover:text-foreground text-2xl"
           onClick={onClose}
           aria-label="Close"
           disabled={loading}
         >
           &times;
         </button>
-        <h2 className="text-xl font-bold mb-4 text-gray-100">Add Client</h2>
+        <h2 className="text-xl font-bold mb-4">Add Client</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-gray-300 mb-1 font-medium">
-              Name <span className="text-red-400">*</span>
+            <label className="block mb-1 font-medium">
+              Name <span className="text-destructive">*</span>
             </label>
-            <input
-              type="text"
-              className="w-full px-3 py-2 rounded bg-gray-800 text-gray-100 border border-gray-700 focus:outline-none"
+            <Input
               value={name}
               onChange={e => setName(e.target.value)}
+              placeholder="Name"
               disabled={loading}
               required
             />
           </div>
           <div>
-            <label className="block text-gray-300 mb-1 font-medium">
-              Discord ID <span className="text-red-400">*</span>
+            <label className="block mb-1 font-medium">
+              Discord ID <span className="text-destructive">*</span>
             </label>
-            <input
-              type="text"
-              className="w-full px-3 py-2 rounded bg-gray-800 text-gray-100 border border-gray-700 focus:outline-none"
+            <Input
               value={discordId}
               onChange={e => setDiscordId(e.target.value)}
               disabled={loading}
@@ -104,9 +104,8 @@ export default function AddClientModal({
             />
           </div>
           <div>
-            <label className="block text-gray-300 mb-1">Optional Note</label>
-            <textarea
-              className="w-full px-3 py-2 rounded bg-gray-800 text-gray-100 border border-gray-700 focus:outline-none"
+            <label className="block mb-1">Optional Note</label>
+            <Textarea
               value={note}
               onChange={e => setNote(e.target.value)}
               rows={2}
@@ -115,12 +114,12 @@ export default function AddClientModal({
             />
           </div>
           {error && (
-            <div className="text-red-400 text-sm">{error}</div>
+            <div className="text-destructive text-sm">{error}</div>
           )}
           <div className="flex justify-end">
-            <button
+            <Button
               type="submit"
-              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-lg transition-colors shadow disabled:opacity-60"
+              className="mt-4"
               disabled={loading}
             >
               {loading ? (
@@ -129,7 +128,7 @@ export default function AddClientModal({
                 '+'
               )}
               {loading ? 'Adding...' : 'Add Client'}
-            </button>
+            </Button>
           </div>
         </form>
       </div>

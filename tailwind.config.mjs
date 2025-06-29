@@ -7,17 +7,31 @@ export default {
   theme: {
     extend: {
       colors: {
-        glass: 'rgba(24, 24, 33, 0.6)',
-        // Extend palette for glass border/accents (used via Tailwind classes)
-        'primary-dark': '#181821',
-        'secondary-dark': '#232336',
-        'accent-violet': '#8b5cf6',
-      },
-      boxShadow: {
-        glass: "0 4px 32px 0 rgba(0,0,0,0.20)",
-      },
-      borderColor: {
-        glass: "rgba(255,255,255,0.10)",
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+
+        card: "hsl(var(--card))",
+        "card-foreground": "hsl(var(--card-foreground))",
+
+        primary: {
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
+        },
+        secondary: {
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
+        },
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
+        },
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
+        },
       },
       keyframes: {
         fadeIn: {

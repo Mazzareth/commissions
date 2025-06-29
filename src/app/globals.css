@@ -1,15 +1,50 @@
 @import "tailwindcss";
 
-/* Glassmorphism utility */
-@layer utilities {
-  .glass {
-    @apply backdrop-blur-md bg-white/10 dark:bg-gray-800/30 border border-white/10 shadow-lg;
-  }
+/* 
+  Global Design Tokens (Dark theme as default)
+  All colors use HSL CSS variables for flexibility.
+*/
+:root {
+  --background: 222 47% 11%;
+  --foreground: 215 20% 93%;
+
+  --card: 222 35% 15%;
+  --card-foreground: var(--foreground);
+
+  --border: 218 12% 20%;
+  --input: 218 12% 20%;
+  --ring: 244 80% 66%;
+
+  --primary: 244 83% 62%; /* violet-ish */
+  --primary-foreground: 0 0% 100%;
+
+  --secondary: 199 89% 48%; /* cyan accent */
+  --secondary-foreground: 0 0% 100%;
+
+  --muted: 217 14% 40%;
+  --muted-foreground: 215 14% 65%;
+
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 0 85% 97%;
 }
 
-/* Set pleasant dark gradient background and default text color */
+/* Base styles */
+html {
+  @apply h-full dark:bg-background dark:text-foreground;
+}
 body {
-  @apply bg-gradient-to-br from-gray-900 via-gray-950 to-black text-gray-100 min-h-screen antialiased;
+  @apply min-h-screen bg-background text-foreground antialiased font-sans;
 }
 
-/* Remove old CSS variable approach, Tailwind dark classes are now used */
+/* Visually hidden utility (for accessibility) */
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}

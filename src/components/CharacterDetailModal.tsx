@@ -68,69 +68,70 @@ const CharacterDetailModal: React.FC<CharacterDetailModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
-      <div className="bg-gray-900/95 rounded-xl shadow-xl w-full max-w-lg p-8 relative glass animate-fadeIn">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+      <div className="bg-card border border-border rounded-xl shadow-lg w-full max-w-lg p-8 relative animate-fadeIn">
         <button
-          className="absolute top-4 right-4 text-gray-400 hover:text-blue-300 transition-colors"
+          className="absolute top-4 right-4 text-muted-foreground hover:text-primary transition-colors"
           onClick={onClose}
           aria-label="Close"
         >
-          <span className="material-icons" style={{ fontSize: 24 }}>close</span>
+          {/* Use lucide-react X icon if desired, otherwise keep times symbol */}
+          &times;
         </button>
-        <h2 className="text-2xl font-bold mb-4 text-gray-100">
+        <h2 className="text-2xl font-bold mb-4 text-foreground">
           {character?.edit ? "Edit Character" : "Character Details"}
         </h2>
         {character ? (
           character.edit ? (
             <div className="space-y-4">
               <div>
-                <label className="block font-semibold text-gray-300 mb-1">Name</label>
+                <label className="block font-semibold text-muted-foreground mb-1">Name</label>
                 <input
-                  className="w-full p-2 rounded bg-gray-800 text-gray-100 border border-gray-700 focus:outline-none focus:ring focus:ring-blue-500"
+                  className="w-full p-2 rounded bg-background text-foreground border border-border focus:outline-none"
                   value={editData.name}
                   onChange={e => setEditData(d => ({ ...d, name: e.target.value }))}
                   disabled={loading}
                 />
               </div>
               <div>
-                <label className="block font-semibold text-gray-300 mb-1">Description</label>
+                <label className="block font-semibold text-muted-foreground mb-1">Description</label>
                 <textarea
-                  className="w-full min-h-[60px] p-2 rounded bg-gray-800 text-gray-100 border border-gray-700 focus:outline-none focus:ring focus:ring-blue-500"
+                  className="w-full min-h-[60px] p-2 rounded bg-background text-foreground border border-border focus:outline-none"
                   value={editData.description}
                   onChange={e => setEditData(d => ({ ...d, description: e.target.value }))}
                   disabled={loading}
                 />
               </div>
               <div>
-                <label className="block font-semibold text-gray-300 mb-1">Image URL</label>
+                <label className="block font-semibold text-muted-foreground mb-1">Image URL</label>
                 <input
-                  className="w-full p-2 rounded bg-gray-800 text-gray-100 border border-gray-700 focus:outline-none focus:ring focus:ring-blue-500"
+                  className="w-full p-2 rounded bg-background text-foreground border border-border focus:outline-none"
                   value={editData.imageUrl}
                   onChange={e => setEditData(d => ({ ...d, imageUrl: e.target.value }))}
                   disabled={loading}
                 />
               </div>
-              {error && <div className="text-red-400 text-xs mt-2">{error}</div>}
+              {error && <div className="text-destructive text-xs mt-2">{error}</div>}
             </div>
           ) : (
             <div className="space-y-2">
               <div>
-                <span className="font-semibold text-gray-300">Name:</span> {character.name}
+                <span className="font-semibold text-muted-foreground">Name:</span> <span className="text-foreground">{character.name}</span>
               </div>
               {character.description && (
                 <div>
-                  <span className="font-semibold text-gray-300">Description:</span> {character.description}
+                  <span className="font-semibold text-muted-foreground">Description:</span> <span className="text-foreground">{character.description}</span>
                 </div>
               )}
               {character.imageUrl && (
                 <div>
-                  <span className="font-semibold text-gray-300">Image URL:</span> {character.imageUrl}
+                  <span className="font-semibold text-muted-foreground">Image URL:</span> <span className="text-foreground">{character.imageUrl}</span>
                 </div>
               )}
             </div>
           )
         ) : (
-          <p className="mb-4 text-gray-500">No character selected.</p>
+          <p className="mb-4 text-muted-foreground">No character selected.</p>
         )}
         <div className="flex gap-2 mt-8 justify-end">
           {character?.edit ? (
