@@ -4,6 +4,10 @@ import { useState } from 'react';
 import AddCommissionModal from './AddCommissionModal';
 import AddCharacterModal from './AddCharacterModal';
 
+// Import new modals for detail/edit
+import CharacterDetailModal from './CharacterDetailModal';
+import CommissionDetailModal from './CommissionDetailModal';
+
 type Commission = {
   id: number;
   title: string;
@@ -50,6 +54,22 @@ type ClientDetailsProps = {
 export default function ClientDetails({ client, loading, onRefresh }: ClientDetailsProps) {
   const [showAdd, setShowAdd] = useState(false);
   const [showAddCharacter, setShowAddCharacter] = useState(false);
+
+  // State for opening details/edit modals
+  const [openCommission, setOpenCommission] = useState<Commission | null>(null);
+  const [openCharacter, setOpenCharacter] = useState<Character | null>(null);
+
+  // Handle delete for commission/character
+  const handleDeleteCommission = async (commissionId: number) => {
+    if (!confirm('Are you sure you want to delete this commission?')) return;
+    await fetch(`/api/commissions/${commissionId}`, { method: 'DELETE' });
+    onRefresh();
+  };
+  const handleDeleteCharacter = async (characterId: number) => {
+    if (!confirm('Are you sure you want to delete this character?')) return;
+    await fetch(`/api/characters/${characterId}`, { method: 'DELETE' });
+    onRefresh();
+  };
 
   if (loading) {
     return (
@@ -148,44 +168,58 @@ export default function ClientDetails({ client, loading, onRefresh }: ClientDeta
                 className="glass p-4 rounded-lg shadow-lg animate-fadeIn group relative"
                 style={{ animationDelay: `${idx * 70}ms` }}
               >
-                <div className="flex justify-between items-start">
-                  <h3 className="font-medium text-lg text-gray-100 flex items-center gap-2">
-                    {commission.title}
-                    {/* Edit Commission button (future functionality) */}
-                    <button
-                      className="ml-1 px-2 py-1 text-xs rounded bg-gray-700/40 hover:bg-gray-700/70 text-gray-300 hover:text-blue-300 transition-colors shadow opacity-70 group-hover:opacity-100"
-                      title="Edit Commission (coming soon)"
-                      disabled
+                <div className="flex flex-col gap-2">
+                  <div className="flex justify-between items-start">
+                    <h3 className="font-medium text-lg text-gray-100 flex items-center gap-2">
+                      {commission.title}
+                    </h3>
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
+                        commission.status
+                      )}`}
                     >
-                      <span className="material-icons align-middle" style={{ fontSize: '16px' }}>edit</span>
-                    </button>
-                  </h3>
-                  <span
-                    className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
-                      commission.status
-                    )}`}
-                  >
-                    {commission.status}
-                  </span>
-                </div>
-                {commission.description && (
-                  <p className="text-gray-400 mt-2">{commission.description}</p>
-                )}
-                <div className="mt-3 text-sm text-gray-500">
-                  <p>
-                    Price: <span className="text-gray-300">${commission.price.toFixed(2)}</span>
-                  </p>
-                  <p>
-                    Start Date: <span className="text-gray-300">{formatDate(commission.startDate)}</span>
-                  </p>
-                  <p>
-                    Due Date: <span className="text-gray-300">{formatDate(commission.dueDate)}</span>
-                  </p>
-                  {commission.completedAt && (
-                    <p>
-                      Completed: <span className="text-gray-300">{formatDate(commission.completedAt)}</span>
-                    </p>
+                      {commission.status}
+                    </span>
+                  </div>
+                  {commission.description && (
+                    <p className="text-gray-400">{commission.description}</p>
                   )}
+                  <div className="mt-1 text-sm text-gray-500">
+                    <p>
+                      Price: <span className="text-gray-300">${commission.price.toFixed(2)}</span>
+                    </p>
+                    <p>
+                      Start Date: <span className="text-gray-300">{formatDate(commission.startDate)}</span>
+                    </p>
+                    <p>
+                      Due Date: <span className="text-gray-300">{formatDate(commission.dueDate)}</span>
+                    </p>
+                    {commission.completedAt && (
+                      <p>
+                        Completed: <span className="text-gray-300">{formatDate(commission.completedAt)}</span>
+                      </p>
+                    )}
+                  </div>
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    <button
+                      className="bg-blue-700 hover:bg-blue-800 text-white text-xs px-3 py-1 rounded-md transition-colors"
+                      onClick={() => setOpenCommission(commission)}
+                    >
+                      Open
+                    </button>
+                    <button
+                      className="bg-indigo-700 hover:bg-indigo-800 text-white text-xs px-3 py-1 rounded-md transition-colors"
+                      onClick={() => setOpenCommission({ ...commission, edit: true })}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="bg-red-700 hover:bg-red-800 text-white text-xs px-3 py-1 rounded-md transition-colors"
+                      onClick={() => handleDeleteCommission(commission.id)}
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
@@ -202,6 +236,19 @@ export default function ClientDetails({ client, loading, onRefresh }: ClientDeta
             setShowAdd(false);
           }}
         />
+        {/* Commission Detail Modal */}
+        {openCommission && (
+          <CommissionDetailModal
+            commission={openCommission}
+            isOpen={!!openCommission}
+            onClose={() => setOpenCommission(null)}
+            onUpdated={onRefresh}
+            onDeleted={() => {
+              setOpenCommission(null);
+              onRefresh();
+            }}
+          />
+        )}
       </div>
 
       {/* Characters Section */}
@@ -211,7 +258,7 @@ export default function ClientDetails({ client, loading, onRefresh }: ClientDeta
             Characters
           </h2>
           <button
-            className="ml-auto bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2 rounded-lg shadow transition-colors"
+            className="ml-auto bg-green-600 hover:bg-green-700 text-white text-sm font-semibold px-4 py-2 rounded-lg shadow transition-colors"
             onClick={() => setShowAddCharacter(true)}
           >
             + Add Character
@@ -227,15 +274,37 @@ export default function ClientDetails({ client, loading, onRefresh }: ClientDeta
                 className="glass p-4 rounded-lg shadow-lg animate-fadeIn"
                 style={{ animationDelay: `${idx * 70}ms` }}
               >
-                <h3 className="font-medium text-lg text-gray-100">{character.name}</h3>
-                {character.description && (
-                  <p className="text-gray-400 mt-2">{character.description}</p>
-                )}
-                {character.imageUrl && (
-                  <div className="mt-3 bg-gray-900/40 h-40 flex items-center justify-center rounded">
-                    <p className="text-gray-500 text-sm">Image placeholder: {character.imageUrl}</p>
+                <div className="flex flex-col gap-1">
+                  <h3 className="font-medium text-lg text-gray-100">{character.name}</h3>
+                  {character.description && (
+                    <p className="text-gray-400">{character.description}</p>
+                  )}
+                  {character.imageUrl && (
+                    <div className="mt-2 bg-gray-900/40 h-32 flex items-center justify-center rounded">
+                      <p className="text-gray-500 text-sm">Image: {character.imageUrl}</p>
+                    </div>
+                  )}
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    <button
+                      className="bg-blue-700 hover:bg-blue-800 text-white text-xs px-3 py-1 rounded-md transition-colors"
+                      onClick={() => setOpenCharacter(character)}
+                    >
+                      Open
+                    </button>
+                    <button
+                      className="bg-emerald-700 hover:bg-emerald-800 text-white text-xs px-3 py-1 rounded-md transition-colors"
+                      onClick={() => setOpenCharacter({ ...character, edit: true })}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="bg-red-700 hover:bg-red-800 text-white text-xs px-3 py-1 rounded-md transition-colors"
+                      onClick={() => handleDeleteCharacter(character.id)}
+                    >
+                      Delete
+                    </button>
                   </div>
-                )}
+                </div>
               </div>
             ))}
           </div>
@@ -249,6 +318,19 @@ export default function ClientDetails({ client, loading, onRefresh }: ClientDeta
             setShowAddCharacter(false);
           }}
         />
+        {/* Character Detail Modal */}
+        {openCharacter && (
+          <CharacterDetailModal
+            character={openCharacter}
+            isOpen={!!openCharacter}
+            onClose={() => setOpenCharacter(null)}
+            onUpdated={onRefresh}
+            onDeleted={() => {
+              setOpenCharacter(null);
+              onRefresh();
+            }}
+          />
+        )}
       </div>
 
       {/* Notes Section */}
