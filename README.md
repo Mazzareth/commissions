@@ -81,6 +81,19 @@ If you encounter an error about the DATABASE_URL environment variable not being 
    npm install -D cross-env
    ```
 
+### Schema Migrations
+
+If you encounter errors related to missing columns (such as "Failed to Create Client"), your local database schema may be out of sync with the latest migrations.
+
+To apply new migrations, run:
+```bash
+npx prisma migrate dev
+```
+For production environments, use:
+```bash
+npx prisma migrate deploy
+```
+
 ## License
 
 This project is licensed under the MIT License.
