@@ -90,11 +90,11 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-screen">
       {/* Sidebar with client list */}
-      <div className="w-64 bg-white shadow-md">
-        <div className="p-4 border-b">
-          <h1 className="text-xl font-semibold text-gray-800">Commission Dashboard</h1>
+      <div className="w-64 glass shadow-xl animate-slideUp">
+        <div className="p-4 border-b border-white/10">
+          <h1 className="text-xl font-semibold text-gray-100">Commission Dashboard</h1>
         </div>
         <ClientList 
           clients={clients} 
@@ -105,9 +105,9 @@ export default function Dashboard() {
       </div>
 
       {/* Main content area */}
-      <div className="flex-1 overflow-auto">
+      <div className="flex-1 overflow-auto px-6 py-4">
         {error && (
-          <div className="p-4 m-4 bg-red-100 text-red-700 rounded">
+          <div className="p-4 m-4 bg-red-900/30 text-red-300 rounded-lg glass animate-fadeIn">
             {error}
           </div>
         )}
@@ -116,7 +116,7 @@ export default function Dashboard() {
           <ClientDetails client={selectedClient} loading={loading} />
         ) : (
           <div className="flex items-center justify-center h-full">
-            <div className="text-center text-gray-500">
+            <div className="text-center text-gray-400 animate-fadeIn">
               <h2 className="text-xl font-medium mb-2">No Client Selected</h2>
               <p>Select a client from the list to view their details</p>
             </div>
