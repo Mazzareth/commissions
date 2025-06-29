@@ -8,27 +8,17 @@ const nextConfig: NextConfig = {
         // We only want to modify watchOptions in development mode
         // and not for the server-side compilation
         if (dev && !isServer) {
-            // Original ignored patterns
-            const prevIgnored = config.watchOptions.ignored;
+            // Provide only string globs, per webpack 5 schema
+            const ignoreGlobs: string[] = [
+                '**/node_modules/**',    // webpack default (as a glob)
+                '**/*.db',
+                '**/.db',
+                '**/prisma/dev.db',
+            ];
 
-            // Your new patterns
-            const dbPatterns = ["**/*.db", "**/.db", "**/prisma/dev.db"];
-
-            let newIgnored: (string | RegExp)[] = [];
-
-            // Combine existing ignored patterns with your new ones
-            if (Array.isArray(prevIgnored)) {
-                newIgnored = [...prevIgnored, ...dbPatterns];
-            } else if (typeof prevIgnored === "string" || prevIgnored instanceof RegExp) {
-                newIgnored = [prevIgnored, ...dbPatterns];
-            } else {
-                newIgnored = dbPatterns;
-            }
-
-            // Create a new 'watchOptions' object instead of mutating the existing one
             config.watchOptions = {
                 ...config.watchOptions,
-                ignored: newIgnored,
+                ignored: ignoreGlobs,
             };
         }
 
