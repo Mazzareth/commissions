@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import ClientList from './ClientList';
 import ClientDetails from './ClientDetails';
 import AddClientModal from './AddClientModal';
-import Button from './ui/Button';
+import { Button } from './ui/Button';
 
 type Client = {
   id: number;
@@ -108,9 +108,9 @@ export default function Dashboard() {
   return (
     <div className="flex h-screen">
       {/* Sidebar with client list */}
-      <div className="w-64 glass shadow-xl animate-slideUp">
-        <div className="p-4 border-b border-white/10 flex items-center justify-between">
-          <h1 className="text-xl font-semibold text-gray-100">Commission Dashboard</h1>
+      <div className="w-64 bg-card border-r border-border shadow-xl animate-slideUp">
+        <div className="p-4 border-b border-border bg-background flex items-center justify-between">
+          <h1 className="text-xl font-semibold">Commission Dashboard</h1>
           <div className="flex gap-2">
             {/* Create Client Floating Button */}
             <Button
@@ -118,6 +118,7 @@ export default function Dashboard() {
               onClick={() => setShowAddClient(true)}
               aria-label="Add Client"
               title="Create a new client"
+              size="sm"
             >
               <span className="text-lg mr-1 align-middle">+</span>
               <span className="align-middle whitespace-nowrap">New Client</span>
@@ -135,7 +136,7 @@ export default function Dashboard() {
       {/* Main content area */}
       <div className="flex-1 overflow-auto px-6 py-4">
         {error && (
-          <div className="p-4 m-4 bg-red-900/30 text-red-300 rounded-lg glass animate-fadeIn">
+          <div className="p-4 m-4 bg-destructive/20 border border-destructive text-destructive rounded-lg animate-fadeIn">
             {error}
           </div>
         )}
@@ -152,7 +153,7 @@ export default function Dashboard() {
           />
         ) : (
           <div className="flex items-center justify-center h-full">
-            <div className="text-center text-gray-400 animate-fadeIn">
+            <div className="text-center text-muted-foreground animate-fadeIn">
               <h2 className="text-xl font-medium mb-2">No Client Selected</h2>
               <p>Select a client from the list to view their details</p>
             </div>
