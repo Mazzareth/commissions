@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import AddCommissionModal from './AddCommissionModal';
+import AddCharacterModal from './AddCharacterModal';
 
 type Commission = {
   id: number;
@@ -48,6 +49,7 @@ type ClientDetailsProps = {
 
 export default function ClientDetails({ client, loading, onRefresh }: ClientDetailsProps) {
   const [showAdd, setShowAdd] = useState(false);
+  const [showAddCharacter, setShowAddCharacter] = useState(false);
 
   if (loading) {
     return (
@@ -167,9 +169,17 @@ export default function ClientDetails({ client, loading, onRefresh }: ClientDeta
 
       {/* Characters Section */}
       <div className="mb-8">
-        <h2 className="text-xl font-semibold mb-4 text-gray-300 border-b border-white/10 pb-2">
-          Characters
-        </h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-semibold text-gray-300 border-b border-white/10 pb-2">
+            Characters
+          </h2>
+          <button
+            className="ml-auto bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2 rounded-lg shadow transition-colors"
+            onClick={() => setShowAddCharacter(true)}
+          >
+            + Add Character
+          </button>
+        </div>
         {client.characters.length === 0 ? (
           <p className="text-gray-500">No characters found for this client.</p>
         ) : (
@@ -193,6 +203,15 @@ export default function ClientDetails({ client, loading, onRefresh }: ClientDeta
             ))}
           </div>
         )}
+        <AddCharacterModal
+          clientId={client.id}
+          isOpen={showAddCharacter}
+          onClose={() => setShowAddCharacter(false)}
+          onCreated={() => {
+            onRefresh();
+            setShowAddCharacter(false);
+          }}
+        />
       </div>
 
       {/* Notes Section */}
