@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import ClientList from './ClientList';
 import ClientDetails from './ClientDetails';
+import AddClientModal from './AddClientModal';
 
 type Client = {
   id: number;
@@ -49,26 +50,29 @@ export default function Dashboard() {
   const [selectedClient, setSelectedClient] = useState<ClientWithDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showAddClient, setShowAddClient] = useState(false);
 
-  // Fetch all clients
-  useEffect(() => {
-    const fetchClients = async () => {
-      try {
-        const response = await fetch('/api/clients');
-        if (!response.ok) {
-          throw new Error('Failed to fetch clients');
-        }
-        const data = await response.json();
-        setClients(data);
-        setLoading(false);
-      } catch (err) {
-        setError('Error loading clients. Please try again.');
-        setLoading(false);
-        console.error('Error fetching clients:', err);
+  // Fetch all clients (now reusable)
+  const fetchClients = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch('/api/clients');
+      if (!response.ok) {
+        throw new Error('Failed to fetch clients');
       }
-    };
+      const data = await response.json();
+      setClients(data);
+      setLoading(false);
+    } catch (err) {
+      setError('Error loading clients. Please try again.');
+      setLoading(false);
+      console.error('Error fetching clients:', err);
+    }
+  };
 
+  useEffect(() => {
     fetchClients();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Factor out logic to load a client by id
@@ -99,8 +103,15 @@ export default function Dashboard() {
     <div className="flex h-screen">
       {/* Sidebar with client list */}
       <div className="w-64 glass shadow-xl animate-slideUp">
-        <div className="p-4 border-b border-white/10">
+        <div className="p-4 border-b border-white/10 flex items-center justify-between">
           <h1 className="text-xl font-semibold text-gray-100">Commission Dashboard</h1>
+          <button
+            className="ml-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-3 py-1.5 rounded-lg shadow transition-colors"
+            onClick={() => setShowAddClient(true)}
+            aria-label="Add Client"
+          >
+            + Add Client
+          </button>
         </div>
         <ClientList 
           clients={clients} 
@@ -133,6 +144,15 @@ export default function Dashboard() {
           </div>
         )}
       </div>
+      {/* Add Client Modal */}
+      <AddClientModal
+        isOpen={showAddClient}
+        onClose={() => setShowAddClient(false)}
+        onCreated={() => {
+          fetchClients();
+          setShowAddClient(false);
+        }}
+      />
     </div>
   );
 }
