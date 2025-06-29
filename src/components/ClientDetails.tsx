@@ -222,7 +222,7 @@ export default function ClientDetails({
             {client.commissions.map((commission, idx) => (
               <div
                 key={commission.id}
-                className="glass p-4 rounded-lg shadow-lg animate-fadeIn group relative"
+                className="bg-card border border-border p-4 rounded-lg shadow-lg animate-fadeIn group relative"
                 style={{ animationDelay: `${idx * 70}ms` }}
               >
                 <div className="flex flex-col gap-2">
@@ -322,7 +322,7 @@ export default function ClientDetails({
             {client.characters.map((character, idx) => (
               <div
                 key={character.id}
-                className="glass p-4 rounded-lg shadow-lg animate-fadeIn"
+                className="bg-card border border-border p-4 rounded-lg shadow-lg animate-fadeIn"
                 style={{ animationDelay: `${idx * 70}ms` }}
               >
                 <div className="flex flex-col gap-1">

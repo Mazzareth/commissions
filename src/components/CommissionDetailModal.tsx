@@ -63,7 +63,7 @@ export default function CommissionDetailModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
-      <div className="bg-gray-900/95 rounded-xl shadow-xl w-full max-w-lg p-8 relative animate-fadeIn glass">
+      <div className="bg-card border border-border rounded-xl shadow-xl w-full max-w-lg p-8 relative animate-fadeIn">
         <button
           className="absolute top-4 right-4 text-gray-400 hover:text-blue-300 transition-colors"
           onClick={onClose}
