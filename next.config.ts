@@ -1,23 +1,40 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
-  webpackDevMiddleware: (config) => {
-    // Preserve any existing ignored patterns and add .db files
-    const prevIgnored = config.watchOptions?.ignored;
-    const dbPatterns = ["**/*.db", "**/prisma/dev.db"];
-    if (Array.isArray(prevIgnored)) {
-      config.watchOptions.ignored = [...prevIgnored, ...dbPatterns];
-    } else if (typeof prevIgnored === "string") {
-      config.watchOptions.ignored = [prevIgnored, ...dbPatterns];
-    } else if (prevIgnored instanceof RegExp) {
-      // Not likely in Next.js defaults, but support it
-      config.watchOptions.ignored = [prevIgnored, ...dbPatterns];
-    } else {
-      config.watchOptions.ignored = dbPatterns;
-    }
-    return config;
-  },
+    /* other next.js config options here */
+
+    // The 'webpack' function is the correct place for this configuration
+    webpack: (config, { isServer, dev }) => {
+        // We only want to modify watchOptions in development mode
+        // and not for the server-side compilation
+        if (dev && !isServer) {
+            // Original ignored patterns
+            const prevIgnored = config.watchOptions.ignored;
+
+            // Your new patterns
+            const dbPatterns = ["**/*.db", "**/.db", "**/prisma/dev.db"];
+
+            let newIgnored: (string | RegExp)[] = [];
+
+            // Combine existing ignored patterns with your new ones
+            if (Array.isArray(prevIgnored)) {
+                newIgnored = [...prevIgnored, ...dbPatterns];
+            } else if (typeof prevIgnored === "string" || prevIgnored instanceof RegExp) {
+                newIgnored = [prevIgnored, ...dbPatterns];
+            } else {
+                newIgnored = dbPatterns;
+            }
+
+            // Create a new 'watchOptions' object instead of mutating the existing one
+            config.watchOptions = {
+                ...config.watchOptions,
+                ignored: newIgnored,
+            };
+        }
+
+        // Important: return the modified config
+        return config;
+    },
 };
 
 export default nextConfig;
