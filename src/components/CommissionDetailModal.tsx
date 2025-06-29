@@ -1,25 +1,4 @@
-import React from 'react';
-
-type Commission = {
-  id: number;
-  title: string;
-  description: string | null;
-  price: number;
-  status: string;
-  startDate: string;
-  dueDate: string | null;
-  completedAt: string | null;
-  clientId: number;
-  edit?: boolean; // Used to toggle edit mode, per ClientDetails
-};
-
-type CommissionDetailModalProps = {
-  commission: Commission;
-  isOpen: boolean;
-  onClose: () => void;
-  onUpdated: () => void;
-  onDeleted: () => void;
-};
+'use client';
 
 import React, { useState } from 'react';
 import Button from './ui/Button';
@@ -34,7 +13,7 @@ type Commission = {
   dueDate: string | null;
   completedAt: string | null;
   clientId: number;
-  edit?: boolean;
+  edit?: boolean; // Used to toggle edit mode, per ClientDetails
 };
 
 type CommissionDetailModalProps = {
