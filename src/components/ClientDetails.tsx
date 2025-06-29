@@ -90,11 +90,44 @@ export default function ClientDetails({ client, loading, onRefresh }: ClientDeta
 
   return (
     <div className="p-6">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-200">{client.name}</h1>
-        <div className="mt-2 text-gray-400">
-          {client.email && <p>Email: {client.email}</p>}
-          {client.phone && <p>Phone: {client.phone}</p>}
+      <div className="mb-6 flex items-start justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-200 flex items-center gap-2">
+            {client.name}
+            {/* Edit Client button (future functionality) */}
+            <button
+              className="ml-2 px-2 py-1 text-xs rounded-lg bg-gray-700/40 hover:bg-gray-700/70 text-gray-300 hover:text-blue-300 transition-colors shadow"
+              title="Edit Client (coming soon)"
+              disabled
+            >
+              <span className="material-icons align-middle" style={{ fontSize: '18px' }}>edit</span>
+            </button>
+          </h1>
+          <div className="mt-2 text-gray-400">
+            {client.email && <p>Email: {client.email}</p>}
+            {client.phone && <p>Phone: {client.phone}</p>}
+          </div>
+        </div>
+        {/* Create actions menu */}
+        <div className="flex flex-col gap-2 items-end">
+          <button
+            className="bg-gradient-to-tr from-blue-600 to-indigo-500 hover:from-blue-700 hover:to-indigo-600 text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-lg transition-all duration-200 focus:outline-none focus:ring focus:ring-indigo-400"
+            onClick={() => setShowAdd(true)}
+            aria-label="Add Commission"
+            title="Create a new commission"
+          >
+            <span className="align-middle text-lg mr-1">+</span>
+            New Commission
+          </button>
+          <button
+            className="bg-gradient-to-tr from-green-600 to-emerald-500 hover:from-green-700 hover:to-emerald-600 text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-lg transition-all duration-200 focus:outline-none focus:ring focus:ring-green-400"
+            onClick={() => setShowAddCharacter(true)}
+            aria-label="Add Character"
+            title="Create a new character"
+          >
+            <span className="align-middle text-lg mr-1">+</span>
+            New Character
+          </button>
         </div>
       </div>
 
@@ -104,12 +137,6 @@ export default function ClientDetails({ client, loading, onRefresh }: ClientDeta
           <h2 className="text-xl font-semibold text-gray-300 border-b border-white/10 pb-2">
             Commissions
           </h2>
-          <button
-            className="ml-auto bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2 rounded-lg shadow transition-colors"
-            onClick={() => setShowAdd(true)}
-          >
-            + Add Commission
-          </button>
         </div>
         {client.commissions.length === 0 ? (
           <p className="text-gray-500">No commissions found for this client.</p>
@@ -118,11 +145,21 @@ export default function ClientDetails({ client, loading, onRefresh }: ClientDeta
             {client.commissions.map((commission, idx) => (
               <div
                 key={commission.id}
-                className="glass p-4 rounded-lg shadow-lg animate-fadeIn"
+                className="glass p-4 rounded-lg shadow-lg animate-fadeIn group relative"
                 style={{ animationDelay: `${idx * 70}ms` }}
               >
                 <div className="flex justify-between items-start">
-                  <h3 className="font-medium text-lg text-gray-100">{commission.title}</h3>
+                  <h3 className="font-medium text-lg text-gray-100 flex items-center gap-2">
+                    {commission.title}
+                    {/* Edit Commission button (future functionality) */}
+                    <button
+                      className="ml-1 px-2 py-1 text-xs rounded bg-gray-700/40 hover:bg-gray-700/70 text-gray-300 hover:text-blue-300 transition-colors shadow opacity-70 group-hover:opacity-100"
+                      title="Edit Commission (coming soon)"
+                      disabled
+                    >
+                      <span className="material-icons align-middle" style={{ fontSize: '16px' }}>edit</span>
+                    </button>
+                  </h3>
                   <span
                     className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
                       commission.status

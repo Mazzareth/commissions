@@ -105,13 +105,18 @@ export default function Dashboard() {
       <div className="w-64 glass shadow-xl animate-slideUp">
         <div className="p-4 border-b border-white/10 flex items-center justify-between">
           <h1 className="text-xl font-semibold text-gray-100">Commission Dashboard</h1>
-          <button
-            className="ml-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-3 py-1.5 rounded-lg shadow transition-colors"
-            onClick={() => setShowAddClient(true)}
-            aria-label="Add Client"
-          >
-            + Add Client
-          </button>
+          <div className="flex gap-2">
+            {/* Create Client Floating Button */}
+            <button
+              className="bg-gradient-to-tr from-blue-600 to-indigo-500 hover:from-blue-700 hover:to-indigo-600 text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-lg transition-all duration-200 focus:outline-none focus:ring focus:ring-indigo-400"
+              onClick={() => setShowAddClient(true)}
+              aria-label="Add Client"
+              title="Create a new client"
+            >
+              <span className="text-lg mr-1 align-middle">+</span>
+              <span className="align-middle">New Client</span>
+            </button>
+          </div>
         </div>
         <ClientList 
           clients={clients} 
