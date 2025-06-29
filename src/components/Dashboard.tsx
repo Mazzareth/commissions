@@ -71,8 +71,8 @@ export default function Dashboard() {
     fetchClients();
   }, []);
 
-  // Fetch client details when a client is selected
-  const handleClientSelect = async (clientId: number) => {
+  // Factor out logic to load a client by id
+  const loadClient = async (clientId: number) => {
     try {
       setLoading(true);
       const response = await fetch(`/api/clients/${clientId}`);
@@ -87,6 +87,12 @@ export default function Dashboard() {
       setLoading(false);
       console.error('Error fetching client details:', err);
     }
+  };
+
+  // Fetch client details when a client is selected
+  const handleClientSelect = (clientId: number) => {
+    setSelectedClient(null);
+    loadClient(clientId);
   };
 
   return (
@@ -113,7 +119,11 @@ export default function Dashboard() {
         )}
         
         {selectedClient ? (
-          <ClientDetails client={selectedClient} loading={loading} />
+          <ClientDetails
+            client={selectedClient}
+            loading={loading}
+            onRefresh={() => selectedClient && loadClient(selectedClient.id)}
+          />
         ) : (
           <div className="flex items-center justify-center h-full">
             <div className="text-center text-gray-400 animate-fadeIn">
