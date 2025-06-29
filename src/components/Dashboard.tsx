@@ -9,8 +9,7 @@ import Button from './ui/Button';
 type Client = {
   id: number;
   name: string;
-  email: string | null;
-  phone: string | null;
+  discordId: string | null;
 };
 
 type ClientWithDetails = Client & {
@@ -100,6 +99,12 @@ export default function Dashboard() {
     loadClient(clientId);
   };
 
+  // After client deletion, clear selected client and refresh list
+  const handleClientDeleted = () => {
+    setSelectedClient(null);
+    fetchClients();
+  };
+
   return (
     <div className="flex h-screen">
       {/* Sidebar with client list */}
@@ -140,6 +145,10 @@ export default function Dashboard() {
             client={selectedClient}
             loading={loading}
             onRefresh={() => selectedClient && loadClient(selectedClient.id)}
+            onDeleted={() => {
+              setSelectedClient(null);
+              fetchClients();
+            }}
           />
         ) : (
           <div className="flex items-center justify-center h-full">

@@ -3,8 +3,7 @@
 type Client = {
   id: number;
   name: string;
-  email: string | null;
-  phone: string | null;
+  discordId: string | null;
 };
 
 type ClientListProps = {
@@ -56,8 +55,8 @@ export default function ClientList({
             onClick={() => onSelectClient(client.id)}
           >
             <div className="font-medium text-gray-100">{client.name}</div>
-            {client.email && (
-              <div className="text-sm text-gray-400 truncate">{client.email}</div>
+            {client.discordId && (
+              <div className="text-sm text-gray-400 truncate">{client.discordId}</div>
             )}
           </li>
         ))}

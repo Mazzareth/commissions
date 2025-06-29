@@ -1,32 +1,38 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-interface AddClientModalProps {
+interface EditClientModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onCreated: () => void;
+  client: {
+    id: number;
+    name: string;
+    discordId: string | null;
+  };
+  onUpdated: () => void;
 }
 
-export default function AddClientModal({
+export default function EditClientModal({
   isOpen,
   onClose,
-  onCreated,
-}: AddClientModalProps) {
+  client,
+  onUpdated,
+}: EditClientModalProps) {
   const [name, setName] = useState('');
   const [discordId, setDiscordId] = useState('');
-  const [note, setNote] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  if (!isOpen) return null;
+  useEffect(() => {
+    if (isOpen && client) {
+      setName(client.name ?? '');
+      setDiscordId(client.discordId ?? '');
+      setError(null);
+    }
+  }, [isOpen, client]);
 
-  const resetForm = () => {
-    setName('');
-    setDiscordId('');
-    setNote('');
-    setError(null);
-  };
+  if (!isOpen) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,23 +47,19 @@ export default function AddClientModal({
         name: name.trim(),
         discordId: discordId.trim(),
       };
-      if (note.trim()) {
-        payload.note = note.trim();
-      }
-      const res = await fetch('/api/clients', {
-        method: 'POST',
+      const res = await fetch(`/api/clients/${client.id}`, {
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
       if (!res.ok) {
         const err = await res.json();
-        throw new Error(err.error || 'Failed to create client');
+        throw new Error(err.error || 'Failed to update client');
       }
-      resetForm();
-      onCreated();
+      onUpdated();
       onClose();
     } catch (err: any) {
-      setError(err.message || 'Failed to create client');
+      setError(err.message || 'Failed to update client');
     } finally {
       setLoading(false);
     }
@@ -74,7 +76,7 @@ export default function AddClientModal({
         >
           &times;
         </button>
-        <h2 className="text-xl font-bold mb-4 text-gray-100">Add Client</h2>
+        <h2 className="text-xl font-bold mb-4 text-gray-100">Edit Client</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-gray-300 mb-1 font-medium">
@@ -103,17 +105,6 @@ export default function AddClientModal({
               placeholder="@user#1234"
             />
           </div>
-          <div>
-            <label className="block text-gray-300 mb-1">Optional Note</label>
-            <textarea
-              className="w-full px-3 py-2 rounded bg-gray-800 text-gray-100 border border-gray-700 focus:outline-none"
-              value={note}
-              onChange={e => setNote(e.target.value)}
-              rows={2}
-              disabled={loading}
-              placeholder="Add a note for this client (optional)"
-            />
-          </div>
           {error && (
             <div className="text-red-400 text-sm">{error}</div>
           )}
@@ -126,9 +117,9 @@ export default function AddClientModal({
               {loading ? (
                 <span className="animate-spin inline-block mr-2">&#9696;</span>
               ) : (
-                '+'
+                '✎'
               )}
-              {loading ? 'Adding...' : 'Add Client'}
+              {loading ? 'Saving...' : 'Save Changes'}
             </button>
           </div>
         </form>
