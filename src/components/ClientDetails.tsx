@@ -39,11 +39,14 @@ type Note = {
   createdAt: string;
 };
 
+import EditClientModal from './EditClientModal';
+
+import EditClientModal from './EditClientModal';
+
 type Client = {
   id: number;
   name: string;
-  email: string | null;
-  phone: string | null;
+  discordId: string | null;
   commissions: Commission[];
   characters: Character[];
   notes: Note[];
@@ -53,9 +56,26 @@ type ClientDetailsProps = {
   client: Client;
   loading: boolean;
   onRefresh: () => void;
+  onDeleted?: () => void;
 };
 
-export default function ClientDetails({ client, loading, onRefresh }: ClientDetailsProps) {
+export default function ClientDetails({ client, loading, onRefresh, onDeleted }: ClientDetailsProps) {
+  id: number;
+  name: string;
+  discordId: string | null;
+  commissions: Commission[];
+  characters: Character[];
+  notes: Note[];
+};
+
+type ClientDetailsProps = {
+  client: Client;
+  loading: boolean;
+  onRefresh: () => void;
+  onDeleted?: () => void;
+};
+
+export default function ClientDetails({ client, loading, onRefresh, onDeleted }: ClientDetailsProps) {
   const [showAdd, setShowAdd] = useState(false);
   const [showAddCharacter, setShowAddCharacter] = useState(false);
 
@@ -106,6 +126,10 @@ export default function ClientDetails({ client, loading, onRefresh }: ClientDeta
     }
   };
 
+  const [showEditClient, setShowEditClient] = useState(false);
+
+  const [showEditClient, setShowEditClient] = useState(false);
+
   if (loading) {
     return (
       <div className="p-6">
@@ -123,6 +147,19 @@ export default function ClientDetails({ client, loading, onRefresh }: ClientDeta
     );
   }
 
+  const handleDeleteClient = async () => {
+    if (!window.confirm('Are you sure you want to delete this client? This will also delete all related commissions, characters, and notes.')) return;
+    await fetch(`/api/clients/${client.id}`, { method: 'DELETE' });
+    if (onDeleted) onDeleted();
+  };
+
+  // Delete client (with confirmation)
+  const handleDeleteClient = async () => {
+    if (!window.confirm('Are you sure you want to delete this client? This will also delete all related commissions, characters, and notes.')) return;
+    await fetch(`/api/clients/${client.id}`, { method: 'DELETE' });
+    if (onDeleted) onDeleted();
+  };
+
   return (
     <div className="p-6">
       <div className="mb-6 flex items-start justify-between">
@@ -131,15 +168,14 @@ export default function ClientDetails({ client, loading, onRefresh }: ClientDeta
             {client.name}
             <button
               className="ml-2 px-2 py-1 text-xs rounded-lg bg-gray-700/40 hover:bg-gray-700/70 text-gray-300 hover:text-blue-300 transition-colors shadow"
-              title="Edit Client (coming soon)"
-              disabled
+              title="Edit Client"
+              onClick={() => setShowEditClient(true)}
             >
               <span className="material-icons align-middle" style={{ fontSize: '18px' }}>edit</span>
             </button>
           </h1>
           <div className="mt-2 text-gray-400">
-            {client.email && <p>Email: {client.email}</p>}
-            {client.phone && <p>Phone: {client.phone}</p>}
+            {client.discordId && <p>Discord ID: {client.discordId}</p>}
           </div>
         </div>
         <div className="flex flex-col gap-2 items-end">
@@ -161,8 +197,42 @@ export default function ClientDetails({ client, loading, onRefresh }: ClientDeta
             <span className="align-middle text-lg mr-1">+</span>
             New Character
           </Button>
+          <Button
+            variant="danger"
+            onClick={handleDeleteClient}
+          >
+            Delete Client
+          </Button>
         </div>
       </div>
+      <EditClientModal
+        isOpen={showEditClient}
+        onClose={() => setShowEditClient(false)}
+        client={{
+          id: client.id,
+          name: client.name,
+          discordId: client.discordId,
+        }}
+        onUpdated={() => {
+          onRefresh();
+          setShowEditClient(false);
+        }}
+      />
+      </div>
+
+      <EditClientModal
+        isOpen={showEditClient}
+        onClose={() => setShowEditClient(false)}
+        client={{
+          id: client.id,
+          name: client.name,
+          discordId: client.discordId,
+        }}
+        onUpdated={() => {
+          onRefresh();
+          setShowEditClient(false);
+        }}
+      />
 
       {/* Commissions Section */}
       <div className="mb-8">

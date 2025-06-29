@@ -13,24 +13,21 @@ async function main() {
   const client1 = await prisma.client.create({
     data: {
       name: 'John Doe',
-      email: 'john@example.com',
-      phone: '555-123-4567',
+      discordId: 'john#0001',
     },
   });
 
   const client2 = await prisma.client.create({
     data: {
       name: 'Jane Smith',
-      email: 'jane@example.com',
-      phone: '555-987-6543',
+      discordId: 'jane#1234',
     },
   });
 
   const client3 = await prisma.client.create({
     data: {
       name: 'Alex Johnson',
-      email: 'alex@example.com',
-      phone: '555-456-7890',
+      discordId: 'alex#4567',
     },
   });
 
