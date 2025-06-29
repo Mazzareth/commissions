@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import ClientList from './ClientList';
 import ClientDetails from './ClientDetails';
 import AddClientModal from './AddClientModal';
+import Button from './ui/Button';
 
 type Client = {
   id: number;
