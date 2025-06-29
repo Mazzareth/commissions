@@ -63,7 +63,7 @@ export async function PUT(
   }
 }
 
-// DELETE: cascade delete client
+// DELETE: cascade delete client and dependents in a transaction
 export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -73,9 +73,16 @@ export async function DELETE(
     if (isNaN(id)) {
       return NextResponse.json({ error: 'Invalid client ID' }, { status: 400 });
     }
-    // Prisma cascade deletes via relations if set up (ON DELETE CASCADE)
-    await prisma.client.delete({ where: { id } });
-    return NextResponse.json({ success: true });
+
+    // Explicitly delete dependents before client due to missing cascade in DB schema
+    await prisma.$transaction([
+      prisma.note.deleteMany({ where: { clientId: id } }),
+      prisma.character.deleteMany({ where: { clientId: id } }),
+      prisma.commission.deleteMany({ where: { clientId: id } }),
+      prisma.client.delete({ where: { id } }),
+    ]);
+
+    return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {
     console.error('Error deleting client:', error);
     return NextResponse.json({ error: 'Failed to delete client' }, { status: 500 });
