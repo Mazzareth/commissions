@@ -107,15 +107,15 @@ export default function Dashboard() {
           <h1 className="text-xl font-semibold text-gray-100">Commission Dashboard</h1>
           <div className="flex gap-2">
             {/* Create Client Floating Button */}
-            <button
-              className="bg-gradient-to-tr from-blue-600 to-indigo-500 hover:from-blue-700 hover:to-indigo-600 text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-lg transition-all duration-200 focus:outline-none focus:ring focus:ring-indigo-400"
+            <Button
+              variant="primary"
               onClick={() => setShowAddClient(true)}
               aria-label="Add Client"
               title="Create a new client"
             >
               <span className="text-lg mr-1 align-middle">+</span>
-              <span className="align-middle">New Client</span>
-            </button>
+              <span className="align-middle whitespace-nowrap">New Client</span>
+            </Button>
           </div>
         </div>
         <ClientList 
