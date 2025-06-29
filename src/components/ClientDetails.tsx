@@ -60,22 +60,6 @@ type ClientDetailsProps = {
 };
 
 export default function ClientDetails({ client, loading, onRefresh, onDeleted }: ClientDetailsProps) {
-  id: number;
-  name: string;
-  discordId: string | null;
-  commissions: Commission[];
-  characters: Character[];
-  notes: Note[];
-};
-
-type ClientDetailsProps = {
-  client: Client;
-  loading: boolean;
-  onRefresh: () => void;
-  onDeleted?: () => void;
-};
-
-export default function ClientDetails({ client, loading, onRefresh, onDeleted }: ClientDetailsProps) {
   const [showAdd, setShowAdd] = useState(false);
   const [showAddCharacter, setShowAddCharacter] = useState(false);
 
@@ -125,8 +109,6 @@ export default function ClientDetails({ client, loading, onRefresh, onDeleted }:
         return 'bg-gray-700/40 text-gray-300';
     }
   };
-
-  const [showEditClient, setShowEditClient] = useState(false);
 
   const [showEditClient, setShowEditClient] = useState(false);
 
