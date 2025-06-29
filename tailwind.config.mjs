@@ -49,5 +49,8 @@ export default {
       },
     },
   },
+  safelist: [
+    "dark:bg-background",
+  ],
   plugins: [],
 };
