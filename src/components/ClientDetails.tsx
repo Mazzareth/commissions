@@ -41,8 +41,6 @@ type Note = {
 
 import EditClientModal from './EditClientModal';
 
-import EditClientModal from './EditClientModal';
-
 type Client = {
   id: number;
   name: string;
@@ -135,13 +133,6 @@ export default function ClientDetails({ client, loading, onRefresh, onDeleted }:
     if (onDeleted) onDeleted();
   };
 
-  // Delete client (with confirmation)
-  const handleDeleteClient = async () => {
-    if (!window.confirm('Are you sure you want to delete this client? This will also delete all related commissions, characters, and notes.')) return;
-    await fetch(`/api/clients/${client.id}`, { method: 'DELETE' });
-    if (onDeleted) onDeleted();
-  };
-
   return (
     <div className="p-6">
       <div className="mb-6 flex items-start justify-between">
@@ -187,21 +178,6 @@ export default function ClientDetails({ client, loading, onRefresh, onDeleted }:
           </Button>
         </div>
       </div>
-      <EditClientModal
-        isOpen={showEditClient}
-        onClose={() => setShowEditClient(false)}
-        client={{
-          id: client.id,
-          name: client.name,
-          discordId: client.discordId,
-        }}
-        onUpdated={() => {
-          onRefresh();
-          setShowEditClient(false);
-        }}
-      />
-      </div>
-
       <EditClientModal
         isOpen={showEditClient}
         onClose={() => setShowEditClient(false)}
