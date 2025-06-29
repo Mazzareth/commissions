@@ -22,14 +22,14 @@ export async function GET() {
 export async function POST(req: Request) {
   try {
     const data = await req.json();
-    const { name, handle, note } = data;
-    if (!name || !handle) {
-      return NextResponse.json({ error: 'Name and handle are required' }, { status: 400 });
+    const { name, discordId, note } = data;
+    if (!name || !discordId) {
+      return NextResponse.json({ error: 'Name and Discord ID are required' }, { status: 400 });
     }
     const client = await prisma.client.create({
       data: {
         name,
-        email: handle, // We'll store handle in email for now (as per requirements)
+        discordId,
       },
     });
     // If a note is provided, attach it
